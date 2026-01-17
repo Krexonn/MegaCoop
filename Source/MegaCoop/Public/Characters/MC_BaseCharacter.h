@@ -14,7 +14,13 @@ class MEGACOOP_API AMC_BaseCharacter : public ACharacter
 public:
 	
 	AMC_BaseCharacter();
+	void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	bool IsAlive() { return bAlive; };
+	void SetAlive(bool bAliveStatus) { bAlive = bAliveStatus; };
 
-
-
+private:
+	
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Replicated)
+	bool bAlive = true;
 };
