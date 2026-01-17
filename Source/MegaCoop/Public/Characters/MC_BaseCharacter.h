@@ -1,0 +1,20 @@
+﻿// Copyright Krexonn
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+#include "MC_BaseCharacter.generated.h"
+
+UCLASS()
+class MEGACOOP_API AMC_BaseCharacter : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	
+	AMC_BaseCharacter();
+
+
+
+};
