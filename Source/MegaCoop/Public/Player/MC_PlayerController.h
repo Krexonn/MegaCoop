@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+struct FGameplayTag;
 
 UCLASS()
 class MEGACOOP_API AMC_PlayerController : public APlayerController
@@ -30,9 +31,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Movement")
 	TObjectPtr<UInputAction> LookAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Primary|Input|Abilities")
+	TObjectPtr<UInputAction> PrimaryAction;
+
 	void Jump();
 	void StopJumping();
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void Primary();
+	void ActivateAbility(const FGameplayTag& AbilityTag) const;
 	bool IsAlive() const;
 };

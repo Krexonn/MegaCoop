@@ -1,11 +1,13 @@
 ﻿// Copyright Krexonn
 
+#include "Player/MC_PlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
-#include "Player/MC_PlayerController.h"
-
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Characters/MC_BaseCharacter.h"
+#include "GameplayTags/MCTags.h"
 
 void AMC_PlayerController::SetupInputComponent()
 {
@@ -69,6 +71,22 @@ void AMC_PlayerController::Look(const FInputActionValue& Value)
 	AddYawInput(LookAxisVector.X);
 	AddPitchInput(LookAxisVector.Y);
 }
+
+void AMC_PlayerController::Primary()
+{
+	ActivateAbility(MCTags::MCAbilities::Primary);
+	UE_LOG(LogTemp, Warning, TEXT("Primary"));
+}
+
+void AMC_PlayerController::ActivateAbility(const FGameplayTag& AbilityTag) const
+{
+	if (!IsAlive()) return;
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
+	if (!IsValid(ASC)) return;
+
+	ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+}
+
 bool AMC_PlayerController::IsAlive() const
 {
 	AMC_BaseCharacter* BaseCharacter = Cast<AMC_BaseCharacter>(GetPawn());
