@@ -2,14 +2,14 @@
 
 
 #include "Player/MC_PlayerState.h"
-#include "AbilitySystemComponent.h"
+#include "AbilitySystem/MC_AbilitySystemComponent.h"
 
 AMC_PlayerState::AMC_PlayerState()
 {
 	SetNetUpdateFrequency(100.f);
 
 	
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<UMC_AbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 }

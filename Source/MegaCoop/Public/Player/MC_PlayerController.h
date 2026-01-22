@@ -31,7 +31,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Movement")
 	TObjectPtr<UInputAction> LookAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Primary|Input|Abilities")
+	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Abilities")
 	TObjectPtr<UInputAction> PrimaryAction;
 
 	void Jump();
