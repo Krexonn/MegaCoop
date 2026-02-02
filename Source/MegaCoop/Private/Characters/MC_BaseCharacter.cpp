@@ -21,7 +21,7 @@ UAbilitySystemComponent* AMC_BaseCharacter::GetAbilitySystemComponent() const
 
 void AMC_BaseCharacter::GiveStartupAbilities()
 {
-	if (IsValid(GetAbilitySystemComponent()))return;
+	if (!IsValid(GetAbilitySystemComponent()))return;
 	for (const auto& Ability : StartupAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
