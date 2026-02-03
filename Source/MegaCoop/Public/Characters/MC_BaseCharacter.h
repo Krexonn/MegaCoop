@@ -19,6 +19,8 @@ public:
 	
 	void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAttributeSet* GetAttributeSet() const { return nullptr; }
+	
 	bool IsAlive() { return bAlive; };
 	void SetAlive(bool bAliveStatus) { bAlive = bAliveStatus; };
 protected:

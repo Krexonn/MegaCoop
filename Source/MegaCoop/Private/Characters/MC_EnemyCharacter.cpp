@@ -3,6 +3,7 @@
 
 #include "Characters/MC_EnemyCharacter.h"
 #include "AbilitySystem/MC_AbilitySystemComponent.h"
+#include "AbilitySystem/MC_AttributeSet.h"
 
 
 AMC_EnemyCharacter::AMC_EnemyCharacter()
@@ -13,11 +14,18 @@ AMC_EnemyCharacter::AMC_EnemyCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<UMC_AbilitySystemComponent>("AbiltitySystemComponent");
 	AbilitySystemComponent ->SetIsReplicated(true);
 	AbilitySystemComponent ->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AttributeSet = CreateDefaultSubobject<UMC_AttributeSet>("AttributeSet");
 }
 
 UAbilitySystemComponent* AMC_EnemyCharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+UAttributeSet* AMC_EnemyCharacter::GetAttributeSet() const
+{
+	return AttributeSet;
 }
 
 

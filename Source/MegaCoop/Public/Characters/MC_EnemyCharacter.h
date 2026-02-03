@@ -7,6 +7,7 @@
 #include "MC_EnemyCharacter.generated.h"
 
 class UAbilitySystemComponent;
+class  UAttributeSet;
 
 UCLASS()
 class MEGACOOP_API AMC_EnemyCharacter : public AMC_BaseCharacter
@@ -17,6 +18,8 @@ public:
 	
 	AMC_EnemyCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAttributeSet* GetAttributeSet() const override;
+	
 protected:
 
 	virtual void BeginPlay() override;
@@ -25,4 +28,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 };
