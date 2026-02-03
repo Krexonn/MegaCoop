@@ -9,6 +9,8 @@
 #include "MC_BaseCharacter.generated.h"
 
 class UGameplayAbility;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FASCInitialized, UAbilitySystemComponent*, ASC, UAttributeSet*,AS);
 UCLASS()
 class MEGACOOP_API AMC_BaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
@@ -23,6 +25,9 @@ public:
 	
 	bool IsAlive() { return bAlive; };
 	void SetAlive(bool bAliveStatus) { bAlive = bAliveStatus; };
+
+	UPROPERTY(BlueprintAssignable)
+	FASCInitialized OnASCInitialized;
 	
 protected:
 	void GiveStartupAbilities();

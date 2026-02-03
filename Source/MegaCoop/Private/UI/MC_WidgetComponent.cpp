@@ -3,16 +3,10 @@
 
 #include "UI/MC_WidgetComponent.h"
 
-
-// Sets default values for this component's properties
-UMC_WidgetComponent::UMC_WidgetComponent()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
-}
+#include "AbilitySystem/MC_AbilitySystemComponent.h"
+#include "AbilitySystem/MC_AttributeSet.h"
+#include "Blueprint/WidgetTree.h"
+#include "Characters/MC_BaseCharacter.h"
 
 
 // Called when the game starts
@@ -20,17 +14,77 @@ void UMC_WidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+
+	InitAbilitySystemData();
+
+	if (!IsASCInitialized())
+	{
+		MegaCharacter->OnASCInitialized.AddDynamic(this, &ThisClass::OnASCInitialized);
+		return;
+	}
+
+	InitializeAttributeDelegate();
+}
+
+void UMC_WidgetComponent::InitAbilitySystemData()
+{
+	MegaCharacter = Cast<AMC_BaseCharacter>(GetOwner());
+	AttributeSet = Cast<UMC_AttributeSet>(MegaCharacter->GetAttributeSet());
+	AbilitySystemComponent = Cast<UMC_AbilitySystemComponent>(MegaCharacter->GetAbilitySystemComponent());
 	
 }
 
-
-// Called every frame
-void UMC_WidgetComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                        FActorComponentTickFunction* ThisTickFunction)
+bool UMC_WidgetComponent::IsASCInitialized() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	return AbilitySystemComponent.IsValid() && AttributeSet.IsValid();
 }
+
+void UMC_WidgetComponent::InitializeAttributeDelegate()
+{
+	if (!AttributeSet->bAttributesInitialized)
+	{
+		AttributeSet->OnAttributeInitialized.AddDynamic(this, &ThisClass::BindToAttributeChanges);
+	}
+	else
+	{
+		BindToAttributeChanges();
+	}
+}
+void UMC_WidgetComponent::OnASCInitialized(UAbilitySystemComponent* ASC, UAttributeSet* AS)
+{
+	AbilitySystemComponent = Cast<UMC_AbilitySystemComponent>(ASC);
+	AttributeSet = Cast<UMC_AttributeSet>(AS);
+
+	if (!IsASCInitialized()) return;
+	InitializeAttributeDelegate();
+}
+
+void UMC_WidgetComponent::BindToAttributeChanges()
+{
+	for (const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair : AttributeMap)
+	{
+		BindWidgetToAttributeChanges(GetUserWidgetObject(),Pair); // for checking the owned widget object.
+
+		GetUserWidgetObject()->WidgetTree->ForEachWidget([this, &Pair](UWidget* ChildWidget)
+		{
+			BindWidgetToAttributeChanges(ChildWidget,Pair);
+		});
+	}
+}
+void UMC_WidgetComponent::BindWidgetToAttributeChanges(UWidget* WidgetObject,const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair) const
+{
+	//Check the user widget object owned by this component, see if it is a CC_AttributeWidget, handle it if so.
+	UCC_AttributeWidget* AttributeWidget = Cast<UCC_AttributeWidget>(WidgetObject);
+	if (!IsValid(AttributeWidget)) return; // We only care about CC_Attribute Widgets.
+	if (!AttributeWidget->MatchesAttributes(Pair)) return; // Only subscribe for matching Attributes.
+	AttributeWidget->AvatarActor = MegaCharacter;
+	
+	AttributeWidget->OnAttributeChange(Pair, AttributeSet.Get(), 0.f); // for initial values.
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Key).AddLambda([this, AttributeWidget, &Pair](const FOnAttributeChangeData& AttributeChangeData)
+	{
+		AttributeWidget->OnAttributeChange(Pair, AttributeSet.Get(), AttributeChangeData.OldValue); // for changes during the game.
+	});
+}
+
 

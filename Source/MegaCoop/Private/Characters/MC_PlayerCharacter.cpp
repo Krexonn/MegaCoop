@@ -50,6 +50,14 @@ UAbilitySystemComponent* AMC_PlayerCharacter::GetAbilitySystemComponent() const
 	return MCPlayerState->GetAbilitySystemComponent();
 }
 
+UAttributeSet* AMC_PlayerCharacter::GetAttributeSet() const
+{
+	AMC_PlayerState* CCPlayerState = Cast<AMC_PlayerState>(GetPlayerState());
+	if (!IsValid(CCPlayerState)) return nullptr;
+
+	return CCPlayerState->GetAttributeSet();
+}
+
 void AMC_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -57,6 +65,7 @@ void AMC_PlayerCharacter::PossessedBy(AController* NewController)
 	if (!IsValid(GetAbilitySystemComponent())|| !HasAuthority()) return;
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 	GiveStartupAbilities();
 	InitializeAttributes();
 
@@ -73,6 +82,12 @@ void AMC_PlayerCharacter::OnRep_PlayerState()
 	if (!IsValid(GetAbilitySystemComponent())) return;
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+
+	UMC_AttributeSet* CC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
+	if (!IsValid(CC_AttributeSet)) return;
+
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 

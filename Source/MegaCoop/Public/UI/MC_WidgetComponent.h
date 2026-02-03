@@ -13,15 +13,28 @@ class MEGACOOP_API UMC_WidgetComponent : public UWidgetComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
-	UMC_WidgetComponent();
+	
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere)
+	TMap<FGameplayAttribute, FGameplayAttribute> AttributeMap;
 
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+private:
+	TWeakObjectPtr<AMC_BaseCharacter> MegaCharacter;
+	TWeakObjectPtr<UMC_AbilitySystemComponent> AbilitySystemComponent;
+	TWeakObjectPtr<UMC_AttributeSet> AttributeSet;
+
+	void InitAbilitySystemData();
+	bool IsASCInitialized() const;
+	void InitializeAttributeDelegate();
+	void BindWidgetToAttributeChanges(UWidget* WidgetObject, const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair)const;
+
+	UFUNCTION()
+	void OnASCInitialized(UAbilitySystemComponent* ASC, UAttributeSet* AS);
+
+	UFUNCTION()
+	void BindToAttributeChanges();
+
 };
