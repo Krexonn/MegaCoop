@@ -41,6 +41,12 @@ void AMC_EnemyCharacter::BeginPlay()
 	if (!HasAuthority()) return;
 	
 	GiveStartupAbilities();
+	InitializeAttributes();
+
+	UMC_AttributeSet* CC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
+	if (!IsValid(CC_AttributeSet)) return;
+	
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 	
 }
 

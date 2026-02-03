@@ -23,12 +23,23 @@ public:
 	
 	bool IsAlive() { return bAlive; };
 	void SetAlive(bool bAliveStatus) { bAlive = bAliveStatus; };
+	
 protected:
 	void GiveStartupAbilities();
+	void InitializeAttributes() const;
+
+	void OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData);
+	virtual void HandleOnDeath();
 private:
 
-	UPROPERTY(EditDefaultsOnly, Category= "MC|Abilities")
+	UPROPERTY(EditDefaultsOnly, Category= "MegaC|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Effects")
+	TSubclassOf<UGameplayEffect> InitializeAttributesEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Effects")
+	TSubclassOf<UGameplayEffect> ResetAttributesEffect;
 	
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Replicated)
 	bool bAlive = true;

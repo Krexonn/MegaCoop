@@ -4,6 +4,7 @@
 #include "Characters/MC_PlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/MC_AttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -57,6 +58,12 @@ void AMC_PlayerCharacter::PossessedBy(AController* NewController)
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 	GiveStartupAbilities();
+	InitializeAttributes();
+
+	UMC_AttributeSet* CC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
+	if (!IsValid(CC_AttributeSet)) return;
+	
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 void AMC_PlayerCharacter::OnRep_PlayerState()

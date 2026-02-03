@@ -21,7 +21,7 @@ public:
 
 private:
 
-	UPROPERTY(VisibleAnywhere, Category="MC|Abilities")
+	UPROPERTY(VisibleAnywhere, Category="MegaC|Abilities")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()

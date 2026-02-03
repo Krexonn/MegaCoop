@@ -19,19 +19,19 @@ protected:
 	virtual void SetupInputComponent() override;
 private:
 
-	UPROPERTY(EditDefaultsOnly, Category = "MC|Input")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input")
 	TArray<TObjectPtr<UInputMappingContext>> InputMappingContexts;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Movement")
 	TObjectPtr<UInputAction> JumpAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Movement")
 	TObjectPtr<UInputAction> MoveAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Movement")
 	TObjectPtr<UInputAction> LookAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MC|Input|Abilities")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Abilities")
 	TObjectPtr<UInputAction> PrimaryAction;
 
 	void Jump();
