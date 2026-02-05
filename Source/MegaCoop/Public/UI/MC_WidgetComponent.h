@@ -3,6 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttributeSet.h"
+#include "AbilitySystem/MC_AbilitySystemComponent.h"
+#include "AbilitySystem/MC_AttributeSet.h"
+#include "Characters/MC_BaseCharacter.h"
 #include "Components/WidgetComponent.h"
 #include "MC_WidgetComponent.generated.h"
 

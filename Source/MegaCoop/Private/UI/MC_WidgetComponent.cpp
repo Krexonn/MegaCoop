@@ -7,8 +7,10 @@
 #include "AbilitySystem/MC_AttributeSet.h"
 #include "Blueprint/WidgetTree.h"
 #include "Characters/MC_BaseCharacter.h"
+#include "UI/MC_AttributeWidget.h"
 
 
+class UMC_AttributeWidget;
 // Called when the game starts
 void UMC_WidgetComponent::BeginPlay()
 {
@@ -73,8 +75,8 @@ void UMC_WidgetComponent::BindToAttributeChanges()
 }
 void UMC_WidgetComponent::BindWidgetToAttributeChanges(UWidget* WidgetObject,const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair) const
 {
-	//Check the user widget object owned by this component, see if it is a CC_AttributeWidget, handle it if so.
-	UCC_AttributeWidget* AttributeWidget = Cast<UCC_AttributeWidget>(WidgetObject);
+	//Check the user widget object owned by this component, see if it is a MC_AttributeWidget, handle it if so.
+	UMC_AttributeWidget* AttributeWidget = Cast<UMC_AttributeWidget>(WidgetObject);
 	if (!IsValid(AttributeWidget)) return; // We only care about CC_Attribute Widgets.
 	if (!AttributeWidget->MatchesAttributes(Pair)) return; // Only subscribe for matching Attributes.
 	AttributeWidget->AvatarActor = MegaCharacter;
