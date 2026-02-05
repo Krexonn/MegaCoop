@@ -28,6 +28,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FASCInitialized OnASCInitialized;
+
+	UFUNCTION(BlueprintCallable, Category="MegaC|Attribute")
+	void ResetAttributes();
 	
 protected:
 	void GiveStartupAbilities();

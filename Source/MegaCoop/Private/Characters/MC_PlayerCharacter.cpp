@@ -52,10 +52,10 @@ UAbilitySystemComponent* AMC_PlayerCharacter::GetAbilitySystemComponent() const
 
 UAttributeSet* AMC_PlayerCharacter::GetAttributeSet() const
 {
-	AMC_PlayerState* CCPlayerState = Cast<AMC_PlayerState>(GetPlayerState());
-	if (!IsValid(CCPlayerState)) return nullptr;
+	AMC_PlayerState* MCPlayerState = Cast<AMC_PlayerState>(GetPlayerState());
+	if (!IsValid(MCPlayerState)) return nullptr;
 
-	return CCPlayerState->GetAttributeSet();
+	return MCPlayerState->GetAttributeSet();
 }
 
 void AMC_PlayerCharacter::PossessedBy(AController* NewController)
@@ -68,11 +68,11 @@ void AMC_PlayerCharacter::PossessedBy(AController* NewController)
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 	GiveStartupAbilities();
 	InitializeAttributes();
-
-	UMC_AttributeSet* CC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
-	if (!IsValid(CC_AttributeSet)) return;
 	
-	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
+	UMC_AttributeSet* MC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
+	if (!IsValid(MC_AttributeSet)) return;
+	
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(MC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 void AMC_PlayerCharacter::OnRep_PlayerState()
@@ -84,10 +84,10 @@ void AMC_PlayerCharacter::OnRep_PlayerState()
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 
-	UMC_AttributeSet* CC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
-	if (!IsValid(CC_AttributeSet)) return;
+	UMC_AttributeSet* MC_AttributeSet = Cast<UMC_AttributeSet>(GetAttributeSet());
+	if (!IsValid(MC_AttributeSet)) return;
 
-	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(MC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 

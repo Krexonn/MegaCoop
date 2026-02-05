@@ -9,7 +9,7 @@
 AMC_BaseCharacter::AMC_BaseCharacter()
 {
 	
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
@@ -17,6 +17,16 @@ AMC_BaseCharacter::AMC_BaseCharacter()
 UAbilitySystemComponent* AMC_BaseCharacter::GetAbilitySystemComponent() const
 {
 	return nullptr;
+}
+
+void AMC_BaseCharacter::ResetAttributes()
+{
+	checkf(IsValid(ResetAttributesEffect), TEXT("ResetAttributesEffect not set."));
+	if (!IsValid((GetAbilitySystemComponent()))) return;
+
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(ResetAttributesEffect, 1.f, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
 
 void AMC_BaseCharacter::GiveStartupAbilities()
