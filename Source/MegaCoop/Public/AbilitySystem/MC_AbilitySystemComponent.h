@@ -16,10 +16,10 @@ public:
 	virtual void OnGiveAbility(FGameplayAbilitySpec& AbilitySpec) override;
 	virtual void OnRep_ActivateAbilities() override;
 
-	UFUNCTION(BlueprintCallable, Category = "MC|Abilities")
+	UFUNCTION(BlueprintCallable, Category = "MegaC|Abilities")
 	void SetAbilityLevel(TSubclassOf<UGameplayAbility> AbilityClass, int32 Level);
 
-	UFUNCTION(BlueprintCallable, Category = "MC|Abilities")
+	UFUNCTION(BlueprintCallable, Category = "MegaC|Abilities")
 	void AddToAbilityLevel(TSubclassOf<UGameplayAbility> AbilityClass, int32 Level = 1);
 	
 private:
