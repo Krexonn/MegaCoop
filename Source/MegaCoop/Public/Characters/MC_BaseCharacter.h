@@ -19,7 +19,7 @@ class MEGACOOP_API AMC_BaseCharacter : public ACharacter, public IAbilitySystemI
 public:
 	AMC_BaseCharacter();
 	
-	void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAttributeSet* GetAttributeSet() const { return nullptr; }
 	
@@ -29,6 +29,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FASCInitialized OnASCInitialized;
 
+	UFUNCTION(BlueprintCallable, Category="MegaC|Death")
+	virtual void HandleRespawn();
+	
 	UFUNCTION(BlueprintCallable, Category="MegaC|Attribute")
 	void ResetAttributes();
 	

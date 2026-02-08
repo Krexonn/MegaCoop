@@ -59,8 +59,16 @@ void AMC_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeC
 void AMC_BaseCharacter::HandleOnDeath()
 {
 	bAlive = false;
+	if (IsValid(GEngine))
+	{
+		GEngine->AddOnScreenDebugMessage(-1,2.f,FColor::Green,FString::Printf(TEXT("%s died"), *GetName()));
+	}
 }
 
+void AMC_BaseCharacter::HandleRespawn()
+{
+	bAlive = true;
+}
 
 void AMC_BaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
