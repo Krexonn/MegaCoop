@@ -7,8 +7,10 @@
 #include "GameFramework/Actor.h"
 #include "MC_SlashEffectActor.generated.h"
 
-class USphereComponent;
-class UNiagaraComponent;
+class UBoxComponent;    
+class UNiagaraComponent;  
+class URotatingMovementComponent; 
+class USceneComponent;
 
 UCLASS()
 class MEGACOOP_API AMC_SlashEffectActor : public AActor
@@ -16,7 +18,6 @@ class MEGACOOP_API AMC_SlashEffectActor : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AMC_SlashEffectActor();
 
 protected:
@@ -24,12 +25,18 @@ protected:
 
 public:    
 	
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop")
-	TObjectPtr<USphereComponent> CollisionComp;
+	TObjectPtr<UBoxComponent> CollisionComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop")
+	TObjectPtr<USceneComponent> SceneComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop")
 	TObjectPtr<UNiagaraComponent> NiagaraComp;
-
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop")
+	TObjectPtr<URotatingMovementComponent> RotationComp;
 	
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 	

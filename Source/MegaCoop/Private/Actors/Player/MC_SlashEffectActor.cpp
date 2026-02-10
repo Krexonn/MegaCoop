@@ -2,23 +2,39 @@
 
 
 #include "Actors/Player/MC_SlashEffectActor.h"
-#include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Characters/MC_EnemyCharacter.h"
+#include "GameFramework/RotatingMovementComponent.h"
 
 AMC_SlashEffectActor::AMC_SlashEffectActor()
 {
-	PrimaryActorTick.bCanEverTick = false;
-	
-	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
-	RootComponent = CollisionComp;
-	CollisionComp->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	PrimaryActorTick.bCanEverTick = true; 
+
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
+	RootComponent = SceneComponent;
 
 	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComp"));
-	NiagaraComp->SetupAttachment(RootComponent);
+	NiagaraComp->SetupAttachment(RootComponent); 
 	
-	InitialLifeSpan = 0.5f;
+	USceneComponent* RotatingPivot = CreateDefaultSubobject<USceneComponent>(TEXT("RotatingPivot"));
+	RotatingPivot->SetupAttachment(RootComponent);
+	
+	CollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComp"));
+	CollisionComp->SetupAttachment(RotatingPivot);
+	
+	CollisionComp->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f)); 
+	CollisionComp->SetBoxExtent(FVector(100.0f, 40.0f, 5.0f));
+	CollisionComp->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	
+	RotationComp = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotationComp"));
+	RotationComp->SetUpdatedComponent(RotatingPivot); 
+    
+	RotationComp->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
+
+	InitialLifeSpan = 0.3f;
 }
 
 
@@ -34,7 +50,9 @@ void AMC_SlashEffectActor::SetDamageSpec(FGameplayEffectSpecHandle Handle)
 
 void AMC_SlashEffectActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != GetInstigator() && !HitActors.Contains(OtherActor))
+	AMC_EnemyCharacter* Enemy = Cast<AMC_EnemyCharacter>(OtherActor);
+	
+	if (OtherActor && OtherActor != GetInstigator() && !HitActors.Contains(OtherActor) && Enemy)
 	{
 		HitActors.Add(OtherActor);
 		
