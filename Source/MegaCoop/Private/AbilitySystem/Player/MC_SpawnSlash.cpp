@@ -9,29 +9,38 @@ UMC_SpawnSlash::UMC_SpawnSlash()
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
-void UMC_SpawnSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+
+void UMC_SpawnSlash::SpawnSlashActor()
 {
-    if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+    AActor* AvatarActor = GetAvatarActorFromActorInfo();
+    if (!AvatarActor || !SlashActorClass)
     {
-        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        UE_LOG(LogTemp, Warning, TEXT("MegaCoop: Avatar veya SlashActorClass eksik!"));
         return;
     }
-
-    AActor* AvatarActor = ActorInfo->AvatarActor.Get();
-    if (!AvatarActor || !SlashActorClass) return;
     
-    FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass);
-    
-    // (Opsiyonel) Hasar miktarını burada dinamik olarak da set edebilirsin:
-    // DamageSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), 50.0f);
+    FGameplayEffectSpecHandle DamageSpecHandle;
+    if (DamageEffectClass)
+    {
+        DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass);
+    }
     
     for (int32 i = 0; i < SlashCount; i++)
     {
         FVector SpawnLocation = AvatarActor->GetActorLocation();
+        SpawnLocation.Z += 50.0f;
         FRotator SpawnRotation = FRotator::ZeroRotator;
 
-        // Rastgelelik ekle (Karakterin etrafında rastgele yönlerde çıksın)
-        SpawnRotation.Yaw = FMath::RandRange(0.0f, 360.0f);
+        if (i == 0)
+        {
+            SpawnRotation = AvatarActor->GetActorRotation();
+            SpawnRotation.Pitch = 0.0f;
+            SpawnRotation.Roll = 0.0f;
+        }
+        else
+        {
+            SpawnRotation.Yaw = FMath::RandRange(0.0f, 360.0f);
+        }
         
         // Hafif ileri öteleme (Karakterin içinden değil, önünden çıksın)
         FVector ForwardOffset = SpawnRotation.Vector() * 100.0f; 
@@ -47,9 +56,10 @@ void UMC_SpawnSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
         {
             SlashActor->SetActorScale3D(FVector(SlashSizeScale));
             
-            SlashActor->SetDamageSpec(DamageSpecHandle);
+            if (DamageSpecHandle.IsValid())
+            {
+                SlashActor->SetDamageSpec(DamageSpecHandle);
+            }
         }
     }
-    
-    EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

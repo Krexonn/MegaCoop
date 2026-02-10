@@ -7,6 +7,7 @@ namespace MCTags
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(ActivateOnGiven, "MCTags.MCAbilities.ActivateOnGiven", "Tag for the Abilities that should activate immediately once given")
 		
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Primary,"MCTags.MCAbilities.Primary", "Tag for the Primary Ability")
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Sword,"MCTags.MCAbilities.Sword", "Tag for the Sword Ability")
 	}
 	namespace  Events
 	{

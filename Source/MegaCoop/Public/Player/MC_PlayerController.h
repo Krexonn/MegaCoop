@@ -19,26 +19,30 @@ protected:
 	virtual void SetupInputComponent() override;
 private:
 
-	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input")
 	TArray<TObjectPtr<UInputMappingContext>> InputMappingContexts;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Movement")
 	TObjectPtr<UInputAction> JumpAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Movement")
 	TObjectPtr<UInputAction> MoveAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Movement")
 	TObjectPtr<UInputAction> LookAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MegaC|Input|Abilities")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Abilities")
 	TObjectPtr<UInputAction> PrimaryAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Abilities")
+	TObjectPtr<UInputAction> SwordAction;
 
 	void Jump();
 	void StopJumping();
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Primary();
+	void Sword();
 	void ActivateAbility(const FGameplayTag& AbilityTag) const;
 	bool IsAlive() const;
 };

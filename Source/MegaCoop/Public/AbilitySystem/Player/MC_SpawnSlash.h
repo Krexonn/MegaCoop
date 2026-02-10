@@ -15,8 +15,9 @@ class MEGACOOP_API UMC_SpawnSlash : public UGameplayAbility
 public:
 	UMC_SpawnSlash();
 
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
+	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Abilities")
+	void SpawnSlashActor();
+	
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MegaCoop|Config")
@@ -30,4 +31,5 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Config")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	
 };
