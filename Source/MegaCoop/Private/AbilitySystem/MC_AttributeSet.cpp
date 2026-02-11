@@ -25,7 +25,23 @@ void UMC_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 void UMC_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+	
+	HandleShieldBlock(Data);
+	
+	ClampAttributes(Data);
+	
+	HandleKillEvents(Data);
+	
+	if (!bAttributesInitialized)
+	{
+		bAttributesInitialized = true;
+		OnAttributeInitialized.Broadcast();
+	}
+	
+}
 
+void UMC_AttributeSet::ClampAttributes(const FGameplayEffectModCallbackData& Data)
+{
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
@@ -35,20 +51,64 @@ void UMC_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
-	
+}
+
+void UMC_AttributeSet::HandleShieldBlock(const FGameplayEffectModCallbackData& Data)
+{
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		float Magnitude = Data.EvaluatedData.Magnitude;
+		if (Magnitude < 0.0f)
+		{
+			// DÜZELTME 1: Data.Target zaten ASC'nin kendisidir. Ekstra bir şeye gerek yok.
+			UAbilitySystemComponent* TargetASC = &Data.Target;
+
+			// Güvenlik kontrolü (Null check)
+			if (!TargetASC) return;
+
+			FGameplayTag ShieldTag = FGameplayTag::RequestGameplayTag(FName("MCTags.Status.Shielded"));
+
+			// DÜZELTME 2: Fonksiyonun doğru ismi 'GetTagCount'tur.
+			int32 ShieldCount = TargetASC->GetTagCount(ShieldTag);
+
+			if (ShieldCount > 0)
+			{
+				// Hasarı iptal et (Negatif değeri çıkararak geri ekliyoruz)
+				SetHealth(GetHealth() - Magnitude);
+
+				// Stack düşürme kodu (AttributeSet içinden Effect silmek için)
+				// RemoveActiveGameplayEffectBySourceEffect fonksiyonu için de context gerekebilir, 
+				// ancak en temizi bir tag'i kaldırmaktır veya stack count azaltmaktır.
+				// Basitçe "Event" yollayarak karakterin bunu halletmesini sağlamak daha güvenlidir.
+                
+				FGameplayEventData Payload;
+				Payload.Instigator = Data.EffectSpec.GetEffectContext().GetInstigator();
+                
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					TargetASC->GetAvatarActor(), 
+					FGameplayTag::RequestGameplayTag(FName("Event.Shield.Consumed")), 
+					Payload
+				);
+			}
+		}
+	}
+}
+
+void UMC_AttributeSet::HandleKillEvents(const FGameplayEffectModCallbackData& Data)
+{
+	// Eğer Can attribute'u değiştiyse ve Can 0 veya daha az ise
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute() && GetHealth() <= 0.f)
 	{
+		// Daha önce kalkan fonksiyonunda hasarı iptal ettiysek burası zaten çalışmaz (Health > 0 kalır)
 		FGameplayEventData Payload;
 		Payload.Instigator = Data.Target.GetAvatarActor();
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Data.EffectSpec.GetEffectContext().GetInstigator(), MCTags::Events::KillScored, Payload);
+        
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+			Data.EffectSpec.GetEffectContext().GetInstigator(), 
+			MCTags::Events::KillScored, 
+			Payload
+		);
 	}
-	
-	if (!bAttributesInitialized)
-	{
-		bAttributesInitialized = true;
-		OnAttributeInitialized.Broadcast();
-	}
-	
 }
 
 void UMC_AttributeSet::OnRep_AttributesInitialized()
@@ -78,3 +138,4 @@ void UMC_AttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxMana, OldValue);
 }
+

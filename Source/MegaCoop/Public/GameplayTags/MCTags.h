@@ -11,6 +11,11 @@ namespace MCTags
 		
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Primary)
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Sword)
+		
+		namespace Status
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shielded);
+		}
 	}
 	
 	namespace  Events
@@ -20,6 +25,10 @@ namespace MCTags
 		namespace Enemy
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
+		}
+		namespace Player
+		{
+			
 		}
 	}
 }

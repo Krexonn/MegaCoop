@@ -67,4 +67,12 @@ public:
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Mana);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxMana);
+	
+protected:
+	
+	void ClampAttributes(const FGameplayEffectModCallbackData& Data);
+	
+	void HandleShieldBlock(const FGameplayEffectModCallbackData& Data);
+	
+	void HandleKillEvents(const FGameplayEffectModCallbackData& Data);
 };
