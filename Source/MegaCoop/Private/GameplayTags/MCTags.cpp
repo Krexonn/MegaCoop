@@ -22,8 +22,14 @@ namespace MCTags
 		{
 			UE_DEFINE_GAMEPLAY_TAG_COMMENT(HitReact, "MCTags.Events.Enemy.HitReact", "Tag for the HitReact Ability")
 		}
+		
 		namespace Player
 		{
+			namespace Shield
+			{
+				UE_DEFINE_GAMEPLAY_TAG_COMMENT(Consumed, "MCTags.Events.Player.Shield.Consumed", "Tag for the Consumed Ability")
+			
+			}
 		}
 	}
 }

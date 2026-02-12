@@ -16,15 +16,22 @@ public:
 	AMC_OrbitalShield();
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Shield")
+	UPROPERTY(BlueprintReadOnly, Category = "MegaCoop|Shield")
 	AActor* OwnerCharacter;
 	
-	float CurrentAngle; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
+	float CurrentAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
 	float RotationSpeed = 180.0f;
-	float Radius = 150.0f;     
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
+	float Radius = 150.0f; 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
 	float VerticalOffset = 50.0f; 
 	
-	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Gas")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 protected:

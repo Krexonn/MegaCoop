@@ -83,7 +83,7 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
             
             FGameplayEventData EventData;
             EventData.Instigator = this;
-            UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerCharacter, FGameplayTag::RequestGameplayTag("Event.Shield.Consumed"), EventData);
+            UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerCharacter, FGameplayTag::RequestGameplayTag("MCTags.Events.Player.Shield.Consumed"), EventData);
         }
     }
 }

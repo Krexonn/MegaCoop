@@ -29,6 +29,13 @@ namespace MCTags
 		namespace Player
 		{
 			
+			
+			namespace Shield
+			{
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Consumed);
+			
+			}
+			
 		}
 	}
 }
