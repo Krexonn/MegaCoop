@@ -36,13 +36,19 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Abilities")
 	TObjectPtr<UInputAction> SwordAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Input|Abilities")
+	TObjectPtr<UInputAction> ShieldAction;
 
+	bool IsAlive() const;
 	void Jump();
 	void StopJumping();
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	
 	void Primary();
 	void Sword();
+	void Shield();
 	void ActivateAbility(const FGameplayTag& AbilityTag) const;
-	bool IsAlive() const;
+	
 };

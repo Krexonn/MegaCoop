@@ -31,6 +31,7 @@ void AMC_PlayerController::SetupInputComponent()
 	
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
 	EnhancedInputComponent->BindAction(SwordAction, ETriggerEvent::Started, this, &ThisClass::Sword);
+	EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ThisClass::Shield);
 }
 void AMC_PlayerController::Jump()
 {
@@ -85,6 +86,12 @@ void AMC_PlayerController::Sword()
 {
 	ActivateAbility(MCTags::MCAbilities::Sword);
 	UE_LOG(LogTemp, Warning, TEXT("SwordSlash"));
+}
+
+void AMC_PlayerController::Shield()
+{
+	ActivateAbility(MCTags::MCAbilities::Shield);
+	UE_LOG(LogTemp, Warning, TEXT("ActivateShield"));
 }
 
 void AMC_PlayerController::ActivateAbility(const FGameplayTag& AbilityTag) const

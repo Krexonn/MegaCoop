@@ -11,6 +11,7 @@ namespace MCTags
 		
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Primary)
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Sword)
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shield)
 		
 		namespace Status
 		{
