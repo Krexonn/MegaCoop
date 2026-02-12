@@ -16,7 +16,7 @@ public:
 	AMC_OrbitalShield();
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "MegaCoop|Shield")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "MegaCoop|Shield")
 	AActor* OwnerCharacter;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")

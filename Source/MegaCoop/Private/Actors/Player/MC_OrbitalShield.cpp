@@ -14,12 +14,11 @@ AMC_OrbitalShield::AMC_OrbitalShield()
     CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
     RootComponent = CollisionComp;
     
-    // Sadece düşmanları algıla (Pawn kanalını overlap yap, WorldStatic blokla vs.)
     CollisionComp->SetCollisionProfileName(TEXT("OverlapAllDynamic")); 
 
     MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
     MeshComp->SetupAttachment(RootComponent);
-    MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Mesh collision yapmasın
+    MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     
     SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
     SkeletalMeshComp->SetupAttachment(RootComponent);
@@ -34,12 +33,9 @@ void AMC_OrbitalShield::Tick(float DeltaTime)
 
     if (OwnerCharacter)
     {
-        // 1. Açı güncelleme
         CurrentAngle += RotationSpeed * DeltaTime;
         if (CurrentAngle >= 360.0f) CurrentAngle -= 360.0f;
-
-        // 2. Yeni pozisyon hesaplama (Matematiksel Dönüşüm)
-        // Radyan cinsinden açıya ihtiyaç var
+        
         float Radian = FMath::DegreesToRadians(CurrentAngle);
 
         FVector OwnerLoc = OwnerCharacter->GetActorLocation();
@@ -50,9 +46,11 @@ void AMC_OrbitalShield::Tick(float DeltaTime)
         NewLoc.Z = OwnerLoc.Z + VerticalOffset;
 
         SetActorLocation(NewLoc);
-        
-        // İstersen kalkanın yüzü hep dışarı baksın:
-        FRotator NewRot = (NewLoc - OwnerLoc).Rotation();
+        FVector OutwardVector = NewLoc - OwnerLoc;
+        FRotator NewRot = OutwardVector.Rotation();
+    
+        NewRot.Pitch = 0.0f;
+        NewRot.Roll = 0.0f;
         SetActorRotation(NewRot);
     }
 }
@@ -68,7 +66,6 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 {
     if (OtherActor && OtherActor != OwnerCharacter)
     {
-        // GAS üzerinden hasar ver
         UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerCharacter);
         UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
 
