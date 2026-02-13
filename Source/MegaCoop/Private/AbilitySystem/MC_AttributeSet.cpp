@@ -72,14 +72,8 @@ void UMC_AttributeSet::HandleShieldBlock(const FGameplayEffectModCallbackData& D
 
 			if (ShieldCount > 0)
 			{
-				// Hasarı iptal et (Negatif değeri çıkararak geri ekliyoruz)
 				SetHealth(GetHealth() - Magnitude);
-
-				// Stack düşürme kodu (AttributeSet içinden Effect silmek için)
-				// RemoveActiveGameplayEffectBySourceEffect fonksiyonu için de context gerekebilir, 
-				// ancak en temizi bir tag'i kaldırmaktır veya stack count azaltmaktır.
-				// Basitçe "Event" yollayarak karakterin bunu halletmesini sağlamak daha güvenlidir.
-                
+				
 				FGameplayEventData Payload;
 				Payload.Instigator = Data.EffectSpec.GetEffectContext().GetInstigator();
                 
@@ -95,10 +89,8 @@ void UMC_AttributeSet::HandleShieldBlock(const FGameplayEffectModCallbackData& D
 
 void UMC_AttributeSet::HandleKillEvents(const FGameplayEffectModCallbackData& Data)
 {
-	// Eğer Can attribute'u değiştiyse ve Can 0 veya daha az ise
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute() && GetHealth() <= 0.f)
 	{
-		// Daha önce kalkan fonksiyonunda hasarı iptal ettiysek burası zaten çalışmaz (Health > 0 kalır)
 		FGameplayEventData Payload;
 		Payload.Instigator = Data.Target.GetAvatarActor();
         

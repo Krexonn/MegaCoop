@@ -58,7 +58,6 @@ void AMC_OrbitalShield::Tick(float DeltaTime)
 
 void AMC_OrbitalShield::UpdateShieldPosition(float NewAngle, float NewRadius, float NewHeight)
 {
-    // Bu fonksiyonu Karakterimiz her karede (veya değişimde) çağıracak
     if (!OwnerCharacter) return;
 
     float Radian = FMath::DegreesToRadians(NewAngle);
@@ -71,7 +70,6 @@ void AMC_OrbitalShield::UpdateShieldPosition(float NewAngle, float NewRadius, fl
 
     SetActorLocation(NewLoc);
 
-    // Dışarı bakması için rotasyon (Senin istediğin dışa bakma kodu)
     FVector OutwardVector = NewLoc - OwnerLoc;
     FRotator NewRot = OutwardVector.Rotation();
     NewRot.Pitch = 0.0f; 
