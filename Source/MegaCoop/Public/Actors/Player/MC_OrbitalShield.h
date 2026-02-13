@@ -22,6 +22,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
 	float CurrentAngle;
 
+	void UpdateShieldPosition(float NewAngle, float NewRadius, float NewHeight);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
 	float RotationSpeed = 180.0f;
 

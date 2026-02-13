@@ -17,6 +17,8 @@ void UMC_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Mana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxMana, COND_None, REPNOTIFY_Always);
+	
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxShieldCount, COND_None, REPNOTIFY_Always);
 
 	DOREPLIFETIME(ThisClass, bAttributesInitialized);
 	
@@ -60,15 +62,12 @@ void UMC_AttributeSet::HandleShieldBlock(const FGameplayEffectModCallbackData& D
 		float Magnitude = Data.EvaluatedData.Magnitude;
 		if (Magnitude < 0.0f)
 		{
-			// DÜZELTME 1: Data.Target zaten ASC'nin kendisidir. Ekstra bir şeye gerek yok.
 			UAbilitySystemComponent* TargetASC = &Data.Target;
-
-			// Güvenlik kontrolü (Null check)
+			
 			if (!TargetASC) return;
 
 			FGameplayTag ShieldTag = FGameplayTag::RequestGameplayTag(FName("MCTags.Status.Shielded"));
-
-			// DÜZELTME 2: Fonksiyonun doğru ismi 'GetTagCount'tur.
+			
 			int32 ShieldCount = TargetASC->GetTagCount(ShieldTag);
 
 			if (ShieldCount > 0)
@@ -137,5 +136,10 @@ void UMC_AttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue)
 void UMC_AttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxMana, OldValue);
+}
+
+void UMC_AttributeSet::OnRep_MaxShieldCount(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxShieldCount, OldValue);
 }
 

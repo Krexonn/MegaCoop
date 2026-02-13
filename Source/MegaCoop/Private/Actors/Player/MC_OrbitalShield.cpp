@@ -4,6 +4,7 @@
 #include "Actors/Player/MC_OrbitalShield.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Characters/MC_PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 
 
@@ -55,6 +56,29 @@ void AMC_OrbitalShield::Tick(float DeltaTime)
     }
 }
 
+void AMC_OrbitalShield::UpdateShieldPosition(float NewAngle, float NewRadius, float NewHeight)
+{
+    // Bu fonksiyonu Karakterimiz her karede (veya değişimde) çağıracak
+    if (!OwnerCharacter) return;
+
+    float Radian = FMath::DegreesToRadians(NewAngle);
+    FVector OwnerLoc = OwnerCharacter->GetActorLocation();
+
+    FVector NewLoc;
+    NewLoc.X = OwnerLoc.X + FMath::Cos(Radian) * NewRadius;
+    NewLoc.Y = OwnerLoc.Y + FMath::Sin(Radian) * NewRadius;
+    NewLoc.Z = OwnerLoc.Z + NewHeight;
+
+    SetActorLocation(NewLoc);
+
+    // Dışarı bakması için rotasyon (Senin istediğin dışa bakma kodu)
+    FVector OutwardVector = NewLoc - OwnerLoc;
+    FRotator NewRot = OutwardVector.Rotation();
+    NewRot.Pitch = 0.0f; 
+    NewRot.Roll = 0.0f;
+    SetActorRotation(NewRot);
+}
+
 void AMC_OrbitalShield::BeginPlay()
 {
     Super::BeginPlay();
@@ -64,7 +88,8 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
                                        bool bFromSweep, const FHitResult& SweepResul)
 {
-    if (OtherActor && OtherActor != OwnerCharacter)
+    AMC_PlayerCharacter* PlayerCharacter = Cast<AMC_PlayerCharacter>(OtherActor);
+    if (OtherActor && OtherActor != OwnerCharacter && OtherActor != PlayerCharacter)
     {
         UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerCharacter);
         UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
