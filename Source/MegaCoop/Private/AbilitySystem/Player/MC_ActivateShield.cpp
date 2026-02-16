@@ -5,18 +5,30 @@
 
 #include "AbilitySystem/MC_AttributeSet.h"
 #include "Actors/Player/MC_OrbitalShield.h"
+#include "Characters/MC_PlayerCharacter.h"
 
 
 void UMC_ActivateShield::CheckAndSpawnShield()
 {
-	if (!AttributeSet) return;
-	int32 MaxShields = FMath::RoundToInt(AttributeSet->GetMaxShieldCount());
+	AMC_PlayerCharacter* AvatarChar = Cast<AMC_PlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (!AvatarChar) return;
+	UMC_AttributeSet* MC_AttributeSet = Cast<UMC_AttributeSet>(AvatarChar->GetAttributeSet());
+    
+	if (!MC_AttributeSet) return;
+	int32 MaxShields = FMath::RoundToInt(MC_AttributeSet->GetMaxShieldCount());
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(MaxShields) );
 	
 	
 	if (ActiveShields.Num() < MaxShields)
 	{
 		SpawnSingleShield();
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("New Shield Spawned!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("New Shield Spawned!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(ActiveShields.Num()) );
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Maximum shielding has been created.") );
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(ActiveShields.Num()) );
 	}
 }
 
@@ -60,9 +72,11 @@ void UMC_ActivateShield::SpawnSingleShield()
 		ActiveShields.Add(NewShield);
 		NewShield->OwnerCharacter = GetAvatarActorFromActorInfo();
 	}
+	ApplyShieldEffect();
+	
 }
 
-void UMC_ActivateShield::CheckStackCount(FActiveGameplayEffectHandle ActiveHandle) const
+int UMC_ActivateShield::CheckStackCount(FActiveGameplayEffectHandle ActiveHandle) const
 {
 	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
 
@@ -71,36 +85,44 @@ void UMC_ActivateShield::CheckStackCount(FActiveGameplayEffectHandle ActiveHandl
 		int32 StackCount = ASC->GetCurrentStackCount(ActiveHandle);
 
 		UE_LOG(LogTemp, Warning, TEXT("Stack Count: %d"), StackCount);
+		return StackCount;
 	}
+	return 0;
 }
 
-void UMC_ActivateShield::SetCurrentAngel(int LastIndex)
+void UMC_ActivateShield::SetCurrentAngle(int LastIndex)
 {
-	for (int i = 1; i < LastIndex; ++i)
+	if (LastIndex <= 0) return;
+	for (int32 i = 1; i < LastIndex; ++i)
 	{
-		int index = i-1;
-		int Angel = (i * 360)/LastIndex;		
+		int32 index = i-1;
+		int Angle = (i * 360)/LastIndex;		
 		
-		AMC_OrbitalShield* shield = ActiveShields[index];
-		shield->CurrentAngle = Angel;
+		if (!ActiveShields.IsValidIndex(index)) return;
+		AMC_OrbitalShield* ShieldRef = ActiveShields[index];
+		if (!ShieldRef) return;
+		
+		ShieldRef->CurrentAngle = Angle;
 	}
 }
 
 void UMC_ActivateShield::ApplyShieldEffect()
 {
 	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
-	if (ASC && ShieldEffectClass)
+	if (ASC && ShieldStackEffectClass)
 	{
 		
 		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 		Context.AddSourceObject(this);
 
-		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(ShieldEffectClass, 1.0f, Context);
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(ShieldStackEffectClass, 1.0f, Context);
 
 		if (SpecHandle.IsValid())
 		{
-			ShieldEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			ShieldActiveEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		}
 	}
-	
+	//Debug
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(CheckStackCount(ShieldActiveEffectHandle)) );
+	SetCurrentAngle(CheckStackCount(ShieldActiveEffectHandle));
 }

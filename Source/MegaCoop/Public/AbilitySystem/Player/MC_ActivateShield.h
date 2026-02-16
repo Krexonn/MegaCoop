@@ -19,19 +19,18 @@ public:
 	UPROPERTY()
 	class UMC_AttributeSet* AttributeSet;
 	
-	FActiveGameplayEffectHandle ShieldEffectHandle;
-	
-	void ApplyShieldEffect();
+	FActiveGameplayEffectHandle ShieldActiveEffectHandle;
+
 	
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MegaCoop|Shield")
-	TSubclassOf<UGameplayEffect> ShieldEffectClass;
+	TSubclassOf<UGameplayEffect> ShieldStackEffectClass;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "MegaCoop|Shield")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MegaCoop|Shield")
 	TSubclassOf<class AMC_OrbitalShield> ShieldClass;
 	
-	UPROPERTY() 
+	UPROPERTY(BlueprintReadOnly, Category = "MegaCoop|Shield") 
 	TArray<AMC_OrbitalShield*> ActiveShields;
 	
 	FTimerHandle TimerHandle_ShieldRegen;
@@ -41,18 +40,21 @@ protected:
 	
 	
 	
-	UFUNCTION() 
-	void CheckAndSpawnShield();
-	
 	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Shield")
 	void GetTimerEvent();
 	
-	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Shield")
+	UFUNCTION() 
+	void CheckAndSpawnShield();
+	
+	UFUNCTION()
 	void SpawnSingleShield();
 	
-	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Shield")
-	void CheckStackCount(FActiveGameplayEffectHandle ActiveHandle) const;
+	UFUNCTION()
+	int CheckStackCount(FActiveGameplayEffectHandle ActiveHandle) const;
 	
-	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Shield")
-	void SetCurrentAngel(int LastIndex);
+	UFUNCTION()
+	void SetCurrentAngle(int LastIndex);
+	
+	UFUNCTION()
+	void ApplyShieldEffect();
 };
