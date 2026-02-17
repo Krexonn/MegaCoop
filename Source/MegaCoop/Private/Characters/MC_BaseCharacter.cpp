@@ -3,7 +3,8 @@
 
 #include "Characters/MC_BaseCharacter.h"
 #include "AbilitySystemComponent.h"
-#include "Net/UnrealNetwork.h"
+#include "Engine/Engine.h"
+
 
 
 AMC_BaseCharacter::AMC_BaseCharacter()
@@ -58,23 +59,29 @@ void AMC_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeC
 
 void AMC_BaseCharacter::HandleOnDeath()
 {
-	bAlive = false;
+	SetAlive(false);
 	if (IsValid(GEngine))
 	{
 		GEngine->AddOnScreenDebugMessage(-1,2.f,FColor::Green,FString::Printf(TEXT("%s died"), *GetName()));
 	}
 }
 
+float AMC_BaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 void AMC_BaseCharacter::HandleRespawn()
 {
-	bAlive = true;
+	SetAlive(true);
 }
 
 void AMC_BaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ThisClass, bAlive);
+	//DOREPLIFETIME(ThisClass, bAlive);
 }
 
 
