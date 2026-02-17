@@ -25,6 +25,8 @@ protected:
 
 public:    
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MegaCoop")
+	float ProjectileDamage = 10.f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop")
 	TObjectPtr<UBoxComponent> CollisionComp;

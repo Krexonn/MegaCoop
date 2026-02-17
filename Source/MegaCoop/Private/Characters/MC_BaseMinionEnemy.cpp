@@ -18,10 +18,18 @@ void AMC_BaseMinionEnemy::BeginPlay()
 	Super::BeginPlay();
 	CurrentHealth = MaxHealth;
 }
+
+void AMC_BaseMinionEnemy::HandleOnDeath()
+{
+	Super::HandleOnDeath();
+	SetAlive(false);
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Minion is Death!")
+}
+
 float AMC_BaseMinionEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("TakeDamage: "));
 	if (ActualDamage > 0.f && IsAlive())
 	{
 		CurrentHealth -= ActualDamage;

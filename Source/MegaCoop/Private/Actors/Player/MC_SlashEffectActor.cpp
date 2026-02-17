@@ -6,8 +6,8 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "Characters/MC_EnemyCharacter.h"
 #include "GameFramework/RotatingMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AMC_SlashEffectActor::AMC_SlashEffectActor()
 {
@@ -50,9 +50,10 @@ void AMC_SlashEffectActor::SetDamageSpec(FGameplayEffectSpecHandle Handle)
 
 void AMC_SlashEffectActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AMC_EnemyCharacter* Enemy = Cast<AMC_EnemyCharacter>(OtherActor);
+	//AMC_EnemyCharacter* Enemy = Cast<AMC_EnemyCharacter>(OtherActor);
+	bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
 	
-	if (OtherActor && OtherActor != GetInstigator() && !HitActors.Contains(OtherActor) && Enemy)
+	if (OtherActor && OtherActor != GetInstigator() && !HitActors.Contains(OtherActor) && bIsEnemy)
 	{
 		HitActors.Add(OtherActor);
 		
@@ -61,6 +62,16 @@ void AMC_SlashEffectActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 		if (TargetASC && DamageEffectSpecHandle.IsValid())
 		{
 			TargetASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetASC);
+		}
+		else
+		{
+			UGameplayStatics::ApplyDamage(
+			OtherActor,
+			ProjectileDamage,
+			GetInstigatorController(),
+			this,
+			UDamageType::StaticClass()
+		);
 		}
 	}
 }

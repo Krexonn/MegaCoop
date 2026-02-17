@@ -11,6 +11,8 @@ class MEGACOOP_API AMC_BaseMinionEnemy : public AMC_LightBaseCharacter
 {
 	GENERATED_BODY()
 
+public:
+	AMC_BaseMinionEnemy();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Stats")
 	float MaxHealth = 100.0f;
@@ -20,6 +22,8 @@ protected:
 	float CurrentHealth;
 
 	virtual void BeginPlay() override;
+	
+	virtual void HandleOnDeath() override;
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };
