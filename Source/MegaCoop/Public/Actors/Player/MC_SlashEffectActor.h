@@ -42,6 +42,7 @@ public:
 	
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 	
+	UPROPERTY()
 	TSet<AActor*> HitActors;
 	
 	void SetDamageSpec(FGameplayEffectSpecHandle Handle);

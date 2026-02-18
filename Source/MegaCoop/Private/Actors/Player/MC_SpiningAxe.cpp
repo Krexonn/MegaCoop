@@ -3,6 +3,8 @@
 
 #include "Actors/Player/MC_SpiningAxe.h"
 
+#include "Utils/MC_BlueprintLibrary.h"
+
 
 // Sets default values
 AMC_SpiningAxe::AMC_SpiningAxe()
@@ -18,9 +20,26 @@ void AMC_SpiningAxe::BeginPlay()
 	
 }
 
-// Called every frame
 void AMC_SpiningAxe::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+void AMC_SpiningAxe::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
+	if (bIsEnemy)
+	{
+		UMC_BlueprintLibrary::ApplyHybridDamage(
+			this,
+			OtherActor,
+			ProjectileDamage,
+			DamageEffectSpecHandle);
+	}
+	
+}
+
+// Called every frame
+
 
