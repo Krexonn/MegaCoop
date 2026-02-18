@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "GameFramework/Actor.h"
 #include "MC_SpiningAxe.generated.h"
 
@@ -20,13 +21,16 @@ public:
 	
 	UPROPERTY()
 	TSet<AActor*> HitActors;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MegaCoop|Damage")
+	TSubclassOf<class UGameplayEffect> DamageEffectClass;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* CollisionComp;
+	class UBoxComponent* CollisionComp;
 	
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* SkeletalMeshComp;
@@ -35,8 +39,12 @@ protected:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
 						UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
 						bool bFromSweep, const FHitResult& SweepResult);
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop|Movement")
+	class UProjectileMovementComponent* ProjectileMovementComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MegaCoop|Movement")
+	class URotatingMovementComponent* RotatingMovementComponent;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+
 };

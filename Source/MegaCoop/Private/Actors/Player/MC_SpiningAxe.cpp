@@ -3,40 +3,84 @@
 
 #include "Actors/Player/MC_SpiningAxe.h"
 
-#include "Utils/MC_BlueprintLibrary.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "Abilities/GameplayAbilityTypes.h"
+#include "Components/BoxComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/RotatingMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
-// Sets default values
 AMC_SpiningAxe::AMC_SpiningAxe()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+	
+	USceneComponent* DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
+	RootComponent = DefaultSceneRoot;
+	
+	CollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComp"));
+	CollisionComp->SetupAttachment(DefaultSceneRoot);
+	CollisionComp->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMC_SpiningAxe::OnOverlapBegin);
+	
+	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
+	SkeletalMeshComp->SetupAttachment(DefaultSceneRoot);
+	SkeletalMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	ProjectileMovementComponent->InitialSpeed = 500.f; 
+	ProjectileMovementComponent->MaxSpeed = 0.f;     
+	ProjectileMovementComponent->ProjectileGravityScale = 0.f; 
+	
+	RotatingMovementComponent = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovementComponent"));
+	RotatingMovementComponent->RotationRate = FRotator(0.f, 1080.f, 0.f);
 }
 
-// Called when the game starts or when spawned
 void AMC_SpiningAxe::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void AMC_SpiningAxe::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 
 void AMC_SpiningAxe::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!OtherActor || OtherActor == GetInstigator()) return;
+	
 	bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
-	if (bIsEnemy)
+	if (bIsEnemy && !HitActors.Contains(OtherActor))
 	{
-		UMC_BlueprintLibrary::ApplyHybridDamage(
-			this,
+		HitActors.Add(OtherActor);
+		AActor* SourceActor = GetInstigator();
+		UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
+		if (SourceASC && TargetASC && DamageEffectClass)
+		{
+			FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
+			ContextHandle.AddInstigator(SourceActor, SourceActor); 
+			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, 1.0f, ContextHandle);
+			
+			FGameplayEventData EventData;
+			EventData.Instigator = this;
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OtherActor,FGameplayTag::RequestGameplayTag("MCTags.Events.Enemy.HitReact"), EventData);
+			
+			SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(),TargetASC );
+		}
+		else
+		{
+			UGameplayStatics::ApplyDamage(
 			OtherActor,
 			ProjectileDamage,
-			DamageEffectSpecHandle);
+			GetInstigatorController(), 
+			this,                           
+			UDamageType::StaticClass()
+		);
+			
+		}
 	}
+	
 	
 }
 

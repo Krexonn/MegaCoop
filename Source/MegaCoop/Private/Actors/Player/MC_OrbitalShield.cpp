@@ -86,8 +86,9 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
                                        bool bFromSweep, const FHitResult& SweepResul)
 {
+    if (OtherActor && OtherActor != OwnerCharacter) return;
     bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
-    if (OtherActor && OtherActor != OwnerCharacter && bIsEnemy)
+    if ( bIsEnemy)
     {
         UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerCharacter);
         UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
