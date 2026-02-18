@@ -2,6 +2,9 @@
 
 
 #include "Utils/MC_BlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 EHitDirection UMC_BlueprintLibrary::GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator)
 {
@@ -31,5 +34,28 @@ FName UMC_BlueprintLibrary::GetHitDirectionName(const EHitDirection HitDirection
 	case EHitDirection::Right: return FName("Right");
 	case EHitDirection::Forward: return FName("Forward");
 	default: return FName("None");
+	}
+}
+
+void UMC_BlueprintLibrary::ApplyHybridDamage(AActor* SourceActor, AActor* TargetActor, float BaseDamage,
+	const FGameplayEffectSpecHandle& DamageEffectSpec)
+{
+	if (!SourceActor || !TargetActor) return;
+	
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	
+	if (TargetASC && DamageEffectSpec.IsValid())
+	{
+		TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpec.Data.Get());
+	}
+	else
+	{
+		UGameplayStatics::ApplyDamage(
+			TargetActor,
+			BaseDamage,
+			SourceActor->GetInstigatorController(), 
+			SourceActor,                           
+			UDamageType::StaticClass()
+		);
 	}
 }

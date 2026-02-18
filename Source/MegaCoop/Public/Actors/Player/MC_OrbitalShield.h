@@ -21,6 +21,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
 	float CurrentAngle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MegaCoop")
+	float ProjectileDamage = 10.f;
 
 	void UpdateShieldPosition(float NewAngle, float NewRadius, float NewHeight);
 	

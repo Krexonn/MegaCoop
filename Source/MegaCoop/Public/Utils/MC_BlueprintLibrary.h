@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "MC_BlueprintLibrary.generated.h"
 
@@ -27,4 +28,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static FName GetHitDirectionName(const EHitDirection HitDirection);
+	
+	UFUNCTION(BlueprintCallable, Category = "MegaC|AbilitySystem")
+	static void ApplyHybridDamage(
+		AActor* SourceActor, 
+		AActor* TargetActor, 
+		float BaseDamage, 
+		const FGameplayEffectSpecHandle& DamageEffectSpec
+	);
 };

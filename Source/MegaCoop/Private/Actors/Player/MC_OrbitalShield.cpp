@@ -4,8 +4,8 @@
 #include "Actors/Player/MC_OrbitalShield.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Characters/MC_PlayerCharacter.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AMC_OrbitalShield::AMC_OrbitalShield()
@@ -86,8 +86,8 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
                                        bool bFromSweep, const FHitResult& SweepResul)
 {
-    AMC_PlayerCharacter* PlayerCharacter = Cast<AMC_PlayerCharacter>(OtherActor);
-    if (OtherActor && OtherActor != OwnerCharacter && OtherActor != PlayerCharacter)
+    bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
+    if (OtherActor && OtherActor != OwnerCharacter && bIsEnemy)
     {
         UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerCharacter);
         UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
@@ -104,6 +104,20 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
             FGameplayEventData EventData;
             EventData.Instigator = this;
             UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerCharacter, FGameplayTag::RequestGameplayTag("MCTags.Events.Player.Shield.Consumed"), EventData);
+        }
+        else
+        {
+            UGameplayStatics::ApplyDamage(
+            OtherActor,
+            ProjectileDamage,
+            GetInstigatorController(), 
+            this,                           
+            UDamageType::StaticClass()
+        );
+            FGameplayEventData EventData;
+            EventData.Instigator = this;
+            UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerCharacter, FGameplayTag::RequestGameplayTag("MCTags.Events.Player.Shield.Consumed"), EventData);
+            Destroy();
         }
     }
 }

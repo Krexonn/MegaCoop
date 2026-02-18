@@ -5,9 +5,10 @@
 #include "Components/BoxComponent.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AbilitySystemComponent.h"
+//#include "AbilitySystemComponent.h"
 #include "GameFramework/RotatingMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
+//#include "Kismet/GameplayStatics.h"
+#include "Utils/MC_BlueprintLibrary.h"
 
 AMC_SlashEffectActor::AMC_SlashEffectActor()
 {
@@ -57,8 +58,14 @@ void AMC_SlashEffectActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 	{
 		HitActors.Add(OtherActor);
 		
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
-        
+		//UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
+		
+		UMC_BlueprintLibrary::ApplyHybridDamage(
+			this,
+			OtherActor,
+			ProjectileDamage,
+			DamageEffectSpecHandle);
+        /*
 		if (TargetASC && DamageEffectSpecHandle.IsValid())
 		{
 			TargetASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetASC);
@@ -72,7 +79,8 @@ void AMC_SlashEffectActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 			this,
 			UDamageType::StaticClass()
 		);
-		}
+		}*/
+		
 	}
 }
 
