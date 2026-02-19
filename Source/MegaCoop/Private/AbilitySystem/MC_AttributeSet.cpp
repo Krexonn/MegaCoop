@@ -135,3 +135,8 @@ void UMC_AttributeSet::OnRep_MaxShieldCount(const FGameplayAttributeData& OldVal
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxShieldCount, OldValue);
 }
 
+void UMC_AttributeSet::OnRep_SpinningAxeCount(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, SpinningAxeCount, OldValue);
+}
+

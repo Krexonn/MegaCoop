@@ -35,6 +35,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* SkeletalMeshComp;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MegaCoop|Damage")
+	float LifeTime = 1.f;
+	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
 						UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 

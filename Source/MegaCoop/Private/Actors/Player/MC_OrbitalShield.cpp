@@ -86,7 +86,7 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
                                        bool bFromSweep, const FHitResult& SweepResul)
 {
-    if (OtherActor && OtherActor != OwnerCharacter) return;
+    if (!OtherActor || OtherActor == OwnerCharacter) return;
     bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
     if ( bIsEnemy)
     {

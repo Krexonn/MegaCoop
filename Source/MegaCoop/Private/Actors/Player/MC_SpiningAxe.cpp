@@ -15,6 +15,7 @@
 AMC_SpiningAxe::AMC_SpiningAxe()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	InitialLifeSpan = LifeTime;
 	
 	USceneComponent* DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
 	RootComponent = DefaultSceneRoot;
@@ -40,7 +41,6 @@ AMC_SpiningAxe::AMC_SpiningAxe()
 void AMC_SpiningAxe::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 

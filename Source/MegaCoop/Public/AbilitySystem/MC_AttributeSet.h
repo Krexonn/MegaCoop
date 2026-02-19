@@ -52,6 +52,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxShieldCount)
 	FGameplayAttributeData MaxShieldCount;
 	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_SpinningAxeCount)
+	FGameplayAttributeData SpinningAxeCount;
+	
 
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
@@ -68,12 +71,18 @@ public:
 	UFUNCTION()
 	void OnRep_MaxShieldCount(const FGameplayAttributeData& OldValue);
 	
+	UFUNCTION()
+	void OnRep_SpinningAxeCount(const FGameplayAttributeData& OldValue);
+	
+	
+	
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Mana);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxMana);
 	
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxShieldCount);
+	ATTRIBUTE_ACCESSORS(ThisClass, SpinningAxeCount);
 	
 protected:
 	
