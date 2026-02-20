@@ -16,14 +16,26 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Stats")
 	float MaxHealth = 100.0f;
+	
+	virtual void HandleOnDeath() override;
+	
+	void ResetEnemy(AActor* NewTarget);
 
 protected:
+	virtual void Tick(float DeltaTime) override;
 	
 	float CurrentHealth;
 
 	virtual void BeginPlay() override;
 	
-	virtual void HandleOnDeath() override;
+	
 
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount,
+		FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, 
+		AActor* DamageCauser) override;
+	
+public:
+	UPROPERTY()
+	AActor* TargetPlayer;
 };

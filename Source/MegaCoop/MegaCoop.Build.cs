@@ -6,9 +6,10 @@ public class MegaCoop : ModuleRules
 {
 	public MegaCoop(ReadOnlyTargetRules Target) : base(Target)
 	{
+		PrivateDependencyModuleNames.AddRange(new string[] { "AIModule" });
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayAbilities","GameplayTasks","GameplayTags", "UMG","Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayAbilities","GameplayTasks","GameplayTags", "UMG","Niagara","NavigationSystem" });
 		
 
 		// Uncomment if you are using Slate UI

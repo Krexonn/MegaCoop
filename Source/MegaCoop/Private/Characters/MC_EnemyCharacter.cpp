@@ -4,6 +4,7 @@
 #include "Characters/MC_EnemyCharacter.h"
 #include "AbilitySystem/MC_AbilitySystemComponent.h"
 #include "AbilitySystem/MC_AttributeSet.h"
+#include "Components/CapsuleComponent.h"
 
 
 AMC_EnemyCharacter::AMC_EnemyCharacter()
@@ -48,5 +49,23 @@ void AMC_EnemyCharacter::BeginPlay()
 	
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CC_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 	
+}
+
+void AMC_EnemyCharacter::HandleOnDeath()
+{
+	Super::HandleOnDeath();
+	SetActorHiddenInGame(true);
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
+	/*/
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController && AIController->GetBrainComponent())
+	{
+		AIController->GetBrainComponent()->StopLogic("Öldü");
+	}*/
+	
+	SetActorTickEnabled(false);
 }
 
