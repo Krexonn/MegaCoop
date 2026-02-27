@@ -6,6 +6,7 @@
 #include "AbilitySystem/MC_AttributeSet.h"
 #include "Actors/Player/MC_OrbitalShield.h"
 #include "Characters/MC_PlayerCharacter.h"
+#include "Net/UnrealNetwork.h"
 
 
 void UMC_ActivateShield::CheckAndSpawnShield()
@@ -32,8 +33,21 @@ void UMC_ActivateShield::CheckAndSpawnShield()
 	}
 }
 
+void UMC_ActivateShield::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(UMC_ActivateShield, ActiveShields);
+}
+
 void UMC_ActivateShield::GetTimerEvent()
 {
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (AvatarActor && !AvatarActor->HasAuthority()) 
+	{
+		return;
+	}
+	
 	GetWorld()->GetTimerManager().SetTimer(
 		TimerHandle_ShieldRegen, 
 		this, 
@@ -42,6 +56,11 @@ void UMC_ActivateShield::GetTimerEvent()
 		true
 	);
 	
+}
+
+void UMC_ActivateShield::DeleteShieldRef(AMC_OrbitalShield* ShieldRef)
+{
+	ActiveShields.Remove(ShieldRef);
 }
 
 void UMC_ActivateShield::SpawnSingleShield()

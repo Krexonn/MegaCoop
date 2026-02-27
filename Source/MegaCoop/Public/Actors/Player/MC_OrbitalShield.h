@@ -16,10 +16,12 @@ public:
 	AMC_OrbitalShield();
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "MegaCoop|Shield")
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "MegaCoop|Shield")
 	AActor* OwnerCharacter;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "MegaCoop|Shield")
 	float CurrentAngle;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MegaCoop|Shield")

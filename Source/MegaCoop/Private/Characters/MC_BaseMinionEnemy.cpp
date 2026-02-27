@@ -3,6 +3,7 @@
 
 #include "Characters/MC_BaseMinionEnemy.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 AMC_BaseMinionEnemy::AMC_BaseMinionEnemy()
@@ -10,6 +11,14 @@ AMC_BaseMinionEnemy::AMC_BaseMinionEnemy()
 	
 	PrimaryActorTick.bCanEverTick = true;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 600.0f, 0.0f);
 }
 
 void AMC_BaseMinionEnemy::Tick(float DeltaTime)
@@ -35,7 +44,7 @@ void AMC_BaseMinionEnemy::HandleOnDeath()
 {
 	Super::HandleOnDeath();
 	SetAlive(false);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Minion is Death!"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Minion Dead!"));
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	
@@ -64,7 +73,7 @@ float AMC_BaseMinionEnemy::TakeDamage(float DamageAmount, FDamageEvent const& Da
 	{
 		CurrentHealth -= ActualDamage;
 		
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Minion Hasar Aldı: %f, Kalan Can: %f"), ActualDamage, CurrentHealth));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Minion Hasar Aldı: %f, Kalan Can: %f"), ActualDamage, CurrentHealth));
 
 		if (CurrentHealth <= 0.0f)
 		{

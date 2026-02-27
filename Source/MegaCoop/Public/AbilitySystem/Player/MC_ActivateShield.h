@@ -21,6 +21,7 @@ public:
 	
 	FActiveGameplayEffectHandle ShieldActiveEffectHandle;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
 	
@@ -30,7 +31,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MegaCoop|Shield")
 	TSubclassOf<class AMC_OrbitalShield> ShieldClass;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "MegaCoop|Shield") 
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "MegaCoop|Shield") 
 	TArray<AMC_OrbitalShield*> ActiveShields;
 	
 	FTimerHandle TimerHandle_ShieldRegen;
@@ -42,6 +43,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Shield")
 	void GetTimerEvent();
+	
+	UFUNCTION(BlueprintCallable, Category = "MegaCoop|Shield")
+	void DeleteShieldRef(AMC_OrbitalShield* ShieldRef);
 	
 	UFUNCTION() 
 	void CheckAndSpawnShield();

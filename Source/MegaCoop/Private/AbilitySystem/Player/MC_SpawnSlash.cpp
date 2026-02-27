@@ -28,7 +28,7 @@ void UMC_SpawnSlash::SpawnSlashActor()
     for (int32 i = 0; i < SlashCount; i++)
     {
         FVector SpawnLocation = AvatarActor->GetActorLocation();
-        SpawnLocation.Z += 20.0f;
+        SpawnLocation.Z += 0.0f;
         FRotator SpawnRotation = FRotator::ZeroRotator;
 
         if (i == 0)

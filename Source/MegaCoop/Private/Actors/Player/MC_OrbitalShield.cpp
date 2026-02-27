@@ -6,11 +6,16 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 
 AMC_OrbitalShield::AMC_OrbitalShield()
 {
     PrimaryActorTick.bCanEverTick = true;
+    
+    bReplicates = true;
+
+    SetReplicateMovement(false);
 
     CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
     RootComponent = CollisionComp;
@@ -56,6 +61,14 @@ void AMC_OrbitalShield::Tick(float DeltaTime)
     }
 }
 
+void AMC_OrbitalShield::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    
+    DOREPLIFETIME(AMC_OrbitalShield, OwnerCharacter);
+    DOREPLIFETIME(AMC_OrbitalShield, CurrentAngle);
+}
+
 void AMC_OrbitalShield::UpdateShieldPosition(float NewAngle, float NewRadius, float NewHeight)
 {
     if (!OwnerCharacter) return;
@@ -86,6 +99,7 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
                                        bool bFromSweep, const FHitResult& SweepResul)
 {
+    if (!HasAuthority()) return;
     if (!OtherActor || OtherActor == OwnerCharacter) return;
     bool bIsEnemy = OtherActor->ActorHasTag(FName("Enemy"));
     if ( bIsEnemy)

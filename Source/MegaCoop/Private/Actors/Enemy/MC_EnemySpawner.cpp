@@ -17,7 +17,7 @@ AMC_EnemySpawner::AMC_EnemySpawner()
 void AMC_EnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	if (HasAuthority())
+	if (HasAuthority() && SpawnerStarted)
 	{
 		InitializePool(); 
 		

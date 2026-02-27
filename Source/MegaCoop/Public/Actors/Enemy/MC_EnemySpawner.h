@@ -14,6 +14,9 @@ class MEGACOOP_API AMC_EnemySpawner : public AActor
 public:
 	// Sets default values for this actor's properties
 	AMC_EnemySpawner();
+	
+	UPROPERTY(EditAnywhere, Category = "MegaCoop|Spawning")
+	bool SpawnerStarted = true;
 
 protected:
 	virtual void BeginPlay() override;
