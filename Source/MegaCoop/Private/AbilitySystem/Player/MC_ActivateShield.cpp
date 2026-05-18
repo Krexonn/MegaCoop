@@ -1,12 +1,11 @@
-﻿// Copyright Krexonn
+// Copyright Krexonn
 
 
 #include "AbilitySystem/Player/MC_ActivateShield.h"
-
 #include "AbilitySystem/MC_AttributeSet.h"
 #include "Actors/Player/MC_OrbitalShield.h"
 #include "Characters/MC_PlayerCharacter.h"
-#include "Net/UnrealNetwork.h"
+
 
 
 void UMC_ActivateShield::CheckAndSpawnShield()
@@ -14,12 +13,12 @@ void UMC_ActivateShield::CheckAndSpawnShield()
 	AMC_PlayerCharacter* AvatarChar = Cast<AMC_PlayerCharacter>(GetAvatarActorFromActorInfo());
 	if (!AvatarChar) return;
 	UMC_AttributeSet* MC_AttributeSet = Cast<UMC_AttributeSet>(AvatarChar->GetAttributeSet());
-    
 	if (!MC_AttributeSet) return;
+	
 	int32 MaxShields = FMath::RoundToInt(MC_AttributeSet->GetMaxShieldCount());
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(MaxShields) );
+	//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Yellow, FString::Printf(TEXT("Attribute Max Shields: %d"), MaxShields));
 	
-	
+	ActiveShields.Remove(nullptr);
 	if (ActiveShields.Num() < MaxShields)
 	{
 		SpawnSingleShield();
@@ -33,12 +32,9 @@ void UMC_ActivateShield::CheckAndSpawnShield()
 	}
 }
 
-void UMC_ActivateShield::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
-	DOREPLIFETIME(UMC_ActivateShield, ActiveShields);
-}
+
+
+
 
 void UMC_ActivateShield::GetTimerEvent()
 {
@@ -60,7 +56,21 @@ void UMC_ActivateShield::GetTimerEvent()
 
 void UMC_ActivateShield::DeleteShieldRef(AMC_OrbitalShield* ShieldRef)
 {
-	ActiveShields.Remove(ShieldRef);
+	if (ShieldRef)
+	{
+		ActiveShields.Remove(ShieldRef);
+	}
+	ActiveShields.Remove(nullptr);
+	
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	if (ASC && ShieldActiveEffectHandle.IsValid())
+	{
+		// 1 Stack sil (Kaçak silinmelerde bile buff sayısının doğru kalmasını sağlar)
+		ASC->RemoveActiveGameplayEffect(ShieldActiveEffectHandle, 1);
+	}
+	
+	// Bir kalkan eksildiği için açıları yeniden dağıt
+	SetCurrentAngle(ActiveShields.Num());
 }
 
 void UMC_ActivateShield::SpawnSingleShield()
@@ -109,19 +119,22 @@ int UMC_ActivateShield::CheckStackCount(FActiveGameplayEffectHandle ActiveHandle
 	return 0;
 }
 
-void UMC_ActivateShield::SetCurrentAngle(int LastIndex)
+void UMC_ActivateShield::SetCurrentAngle(int ShieldCount)
 {
-	if (LastIndex <= 0) return;
-	for (int32 i = 1; i < LastIndex; ++i)
+	if (ShieldCount <= 0) return;
+	
+	for (int32 i = 0; i < ShieldCount; ++i)
 	{
-		int32 index = i-1;
-		int Angle = (i * 360)/LastIndex;		
+		int Angle = (i * 360) / ShieldCount;		
 		
-		if (!ActiveShields.IsValidIndex(index)) return;
-		AMC_OrbitalShield* ShieldRef = ActiveShields[index];
-		if (!ShieldRef) return;
-		
-		ShieldRef->CurrentAngle = Angle;
+		if (ActiveShields.IsValidIndex(i))
+		{
+			AMC_OrbitalShield* ShieldRef = ActiveShields[i];
+			if (ShieldRef)
+			{
+				ShieldRef->CurrentAngle = Angle;
+			}
+		}
 	}
 }
 
@@ -142,6 +155,7 @@ void UMC_ActivateShield::ApplyShieldEffect()
 		}
 	}
 	//Debug
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(CheckStackCount(ShieldActiveEffectHandle)) );
-	SetCurrentAngle(CheckStackCount(ShieldActiveEffectHandle));
+	GEngine->AddOnScreenDebugMessage(-1, 2.f,FColor::Cyan, "Active Shield Effect");
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::FromInt(CheckStackCount(ShieldActiveEffectHandle)) );
+	SetCurrentAngle(ActiveShields.Num());
 }

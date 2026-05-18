@@ -71,6 +71,7 @@ void AMC_OrbitalShield::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void AMC_OrbitalShield::UpdateShieldPosition(float NewAngle, float NewRadius, float NewHeight)
 {
+    if (!HasAuthority()) return;
     if (!OwnerCharacter) return;
 
     float Radian = FMath::DegreesToRadians(NewAngle);
@@ -113,12 +114,11 @@ void AMC_OrbitalShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
             Context.AddSourceObject(this);
             
             SourceASC->ApplyGameplayEffectToTarget(DamageEffectClass.GetDefaultObject(), TargetASC, 1.0f, Context);
-            
-            Destroy(); 
-            
             FGameplayEventData EventData;
             EventData.Instigator = this;
             UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerCharacter, FGameplayTag::RequestGameplayTag("MCTags.Events.Player.Shield.Consumed"), EventData);
+            
+            Destroy(); 
         }
         else
         {

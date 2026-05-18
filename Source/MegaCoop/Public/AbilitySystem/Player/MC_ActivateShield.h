@@ -1,4 +1,4 @@
-﻿// Copyright Krexonn
+// Copyright Krexonn
 
 #pragma once
 
@@ -21,7 +21,6 @@ public:
 	
 	FActiveGameplayEffectHandle ShieldActiveEffectHandle;
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
 	
@@ -31,7 +30,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MegaCoop|Shield")
 	TSubclassOf<class AMC_OrbitalShield> ShieldClass;
 	
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "MegaCoop|Shield") 
+	UPROPERTY(BlueprintReadOnly, Category = "MegaCoop|Shield") 
 	TArray<AMC_OrbitalShield*> ActiveShields;
 	
 	FTimerHandle TimerHandle_ShieldRegen;
@@ -57,7 +56,7 @@ protected:
 	int CheckStackCount(FActiveGameplayEffectHandle ActiveHandle) const;
 	
 	UFUNCTION()
-	void SetCurrentAngle(int LastIndex);
+	void SetCurrentAngle(int ShieldCount);
 	
 	UFUNCTION()
 	void ApplyShieldEffect();
