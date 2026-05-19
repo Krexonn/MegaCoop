@@ -9,6 +9,7 @@ namespace MCTags
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Primary,"MCTags.MCAbilities.Primary", "Tag for the Primary Ability")
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Sword,"MCTags.MCAbilities.Sword", "Tag for the Sword Ability")
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shield,"MCTags.MCAbilities.Shield", "Tag for the Shield Ability")
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(ShootArrow,"MCTags.MCAbilities.ShootArrow", "Tag for the ShootArrow Ability")
 		
 		namespace Status
 		{

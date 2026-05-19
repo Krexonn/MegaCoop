@@ -32,6 +32,7 @@ void AMC_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
 	EnhancedInputComponent->BindAction(SwordAction, ETriggerEvent::Started, this, &ThisClass::Sword);
 	EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ThisClass::Shield);
+	EnhancedInputComponent->BindAction(ShootArrowAction, ETriggerEvent::Started, this, &ThisClass::ShootArrow);
 }
 void AMC_PlayerController::Jump()
 {
@@ -92,6 +93,12 @@ void AMC_PlayerController::Shield()
 {
 	ActivateAbility(MCTags::MCAbilities::Shield);
 	UE_LOG(LogTemp, Warning, TEXT("ActivateShield"));
+}
+
+void AMC_PlayerController::ShootArrow()
+{
+	ActivateAbility(MCTags::MCAbilities::ShootArrow);
+	UE_LOG(LogTemp, Warning, TEXT("ActivateShootArrow"));
 }
 
 void AMC_PlayerController::ActivateAbility(const FGameplayTag& AbilityTag) const
